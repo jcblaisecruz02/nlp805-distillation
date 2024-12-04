@@ -7,3 +7,8 @@ This repo is using code based on the [TinyBERT](https://github.com/huawei-noah/P
 3. Run the `tiny-distil` SLURM script (adjust paths to accommodate your setup) to pregenerate and run basic distillation.
 4. Upload the resulting model the HuggingFace model hub
 5. Run the `finetune` and `finetune-text` SLURM scripts to do the experiments. This requires the `examples/` folder from HuggingFace Transformers to be cloned.
+
+### Notes
+1. Full results table can be found on the paper.
+2. Models are uploaded on HuggingFace hub (privated) instead of here due to size. Let me know if you need access.
+3. The scripts will automatically download the datasets as needed. Otherwise, use `huggingface-cli` to download them to local and adjust path as necessary.
