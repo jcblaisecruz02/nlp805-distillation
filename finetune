@@ -1,0 +1,37 @@
+#!/bin/bash
+#SBATCH --job-name=dft-dbasecond-ner
+#SBATCH --output=/home/jan.cruz/workspace/slurm-output/dft-dbasecond-ner.%A.txt
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=100G
+#SBATCH --cpus-per-task=32
+#SBATCH --gres=gpu:1
+#SBATCH -p cscc-gpu-p
+#SBATCH -q cscc-gpu-qos
+#SBATCH --time=12:00:00
+
+# /home/jan.cruz/workspace/distillation/distilled-models/distilbert-tiny-multilingual-tagalog-cased \
+# google-bert/bert-base-multilingual-cased
+# distilbert/distilbert-base-multilingual-cased
+# jcblaise/roberta-tagalog-base
+# /home/jan.cruz/workspace/distillation/distilled-models/blankbert-base-multilingual-cased
+
+# /home/jan.cruz/workspace/transformers/examples/pytorch/text-classification/run_classification.py
+#    --text_column_name "text" \
+#    --text_column_delimiter "," \
+#    --label_column_name "label" \
+
+python /home/jan.cruz/workspace/transformers/examples/pytorch/token-classification/run_ner.py \
+    --model_name_or_path /home/jan.cruz/workspace/distillation/distilled-models/distilbert-base-multilingual-tagalog-cased-conditioned \
+    --dataset_name "SEACrowd/tlunified_ner" \
+    --do_train \
+    --do_eval \
+    --max_seq_length 512 \
+    --per_device_train_batch_size 8 \
+    --gradient_accumulation_steps 4 \
+    --fp16 \
+    --learning_rate 2e-5 \
+    --num_train_epochs 3 \
+    --trust_remote_code \
+    --save_total_limit 2 \
+    --output_dir /home/jan.cruz/workspace/distillation/finetuned-models/ours-base-cond/ner

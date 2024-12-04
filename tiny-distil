@@ -1,0 +1,30 @@
+#!/bin/bash
+#SBATCH --job-name=distil-10e
+#SBATCH --output=/home/jan.cruz/workspace/slurm-output/distil-10e.%A.txt
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=200G
+#SBATCH --cpus-per-task=32
+#SBATCH --gres=gpu:1
+#SBATCH -p cscc-gpu-p
+#SBATCH -q cscc-gpu-qos
+#SBATCH --time=12:00:00
+
+# /home/jan.cruz/workspace/distillation/distilled-models/bert-base-multilingual-cased-conditioned
+
+hostname
+
+#python /home/jan.cruz/workspace/huawei/TinyBERT/pregenerate_training_data.py \
+#    --train_corpus /home/jan.cruz/workspace/distillation/data/train.txt \
+#    --bert_model /l/users/jan.cruz/pretrained-models/bert-base-multilingual-cased \
+#    --epochs_to_generate 10 \
+#    --output_dir /home/jan.cruz/workspace/distillation/data/tinybert-data-cased-10e/ 
+
+python /home/jan.cruz/workspace/huawei/TinyBERT/general_distill.py \
+    --pregenerated_data /home/jan.cruz/workspace/distillation/data/tinybert-data-cased-10e/ \
+    --teacher_model /l/users/jan.cruz/pretrained-models/bert-base-multilingual-cased \
+    --student_model /home/jan.cruz/workspace/distillation/ \
+    --train_batch_size 32 \
+    --eval_batch_size 8 \
+    --num_train_epochs 10 \
+    --output_dir /home/jan.cruz/workspace/distillation/distilled-models/distilbert-base-multilingual-tagalog-cased-10e

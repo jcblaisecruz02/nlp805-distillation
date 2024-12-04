@@ -1,0 +1,42 @@
+#!/bin/bash
+#SBATCH --job-name=distil-train-50p
+#SBATCH --output=/home/jan.cruz/workspace/slurm-output/distil-train-50p.%A.txt
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=200G
+#SBATCH --cpus-per-task=32
+#SBATCH --gres=gpu:1
+#SBATCH -p cscc-gpu-p
+#SBATCH -q cscc-gpu-qos
+#SBATCH --time=12:00:00
+
+hostname
+
+#python /home/jan.cruz/workspace/huawei/TinyBERT/pregenerate_training_data.py \
+#    --train_corpus /home/jan.cruz/workspace/distillation/data/train_50p.txt \
+#    --bert_model /l/users/jan.cruz/pretrained-models/bert-base-multilingual-cased \
+#    --epochs_to_generate 3 \
+#    --output_dir /home/jan.cruz/workspace/distillation/data/tinybert-data-cased-50p/ 
+
+#python /home/jan.cruz/workspace/huawei/TinyBERT/pregenerate_training_data.py \
+#    --train_corpus /home/jan.cruz/workspace/distillation/data/train_30p.txt \
+#    --bert_model /l/users/jan.cruz/pretrained-models/bert-base-multilingual-cased \
+#    --epochs_to_generate 3 \
+#    --output_dir /home/jan.cruz/workspace/distillation/data/tinybert-data-cased-30p/ 
+
+#python /home/jan.cruz/workspace/huawei/TinyBERT/pregenerate_training_data.py \
+#    --train_corpus /home/jan.cruz/workspace/distillation/data/train_10p.txt \
+#    --bert_model /l/users/jan.cruz/pretrained-models/bert-base-multilingual-cased \
+#    --epochs_to_generate 3 \
+#    --output_dir /home/jan.cruz/workspace/distillation/data/tinybert-data-cased-10p/ 
+
+#mkdir /home/jan.cruz/workspace/distillation/distilbert-tiny-multilingual-tagalog-cased 
+
+python /home/jan.cruz/workspace/huawei/TinyBERT/general_distill.py \
+    --pregenerated_data /home/jan.cruz/workspace/distillation/data/tinybert-data-cased-50p/ \
+    --teacher_model /l/users/jan.cruz/pretrained-models/bert-base-multilingual-cased \
+    --student_model /home/jan.cruz/workspace/distillation/ \
+    --train_batch_size 32 \
+    --eval_batch_size 8 \
+    --num_train_epochs 3 \
+    --output_dir /home/jan.cruz/workspace/distillation/distilled-models/distilbert-base-multilingual-tagalog-cased-50p 
